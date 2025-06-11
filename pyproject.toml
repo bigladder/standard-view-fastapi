@@ -5,7 +5,10 @@ description = "Add your description here"
 requires-python = "~=3.10"
 readme = "README.md"
 dependencies = [
-    "fastapi[standard]"
+    "fastapi[standard]",
+    "cachetools",
+    "types-cachetools",
+    "itsdangerous"
 ]
 
 [dependency-groups]
