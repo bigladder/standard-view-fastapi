@@ -1,18 +1,10 @@
 FROM python:3.13
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
-ARG PORT=80
-ARG SECRET_KEY=6c03627fdc3f3928b5fb04c384ae5c75
-ARG CACHE_SIZE=1000
-ARG HTTPS_ONLY=False
-ARG SESSION_AGE=86400
+ARG PORT
+ENV PORT=$PORT
 
-ENV	PATH="/code/.venv/bin:$PATH" \
-		PORT=${PORT} \
-		SECRET_KEY=$SECRET_KEY \
-		CACHE_SIZE=$CACHE_SIZE \
-		HTTPS_ONLY=$HTTPS_ONLY \
-		SESSION_AGE=$SESSION_AGE
+ENV PATH="/code/.venv/bin:$PATH"
 
 WORKDIR /code
 

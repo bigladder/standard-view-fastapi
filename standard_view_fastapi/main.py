@@ -1,21 +1,23 @@
 import threading
 
-import config
 import uvicorn
 from cachetools import TTLCache
 from fastapi import FastAPI, UploadFile
 from fastapi.requests import Request
 from middleware import StandardViewMiddleware, get_session_id
+from settings import StandardViewSettings
 from starlette.middleware.sessions import SessionMiddleware
 from validation import validate_upload_file
+
+settings = StandardViewSettings()
 
 app = FastAPI()
 app.add_middleware(StandardViewMiddleware)
 app.add_middleware(
-    SessionMiddleware, secret_key=config.SECRET_KEY, max_age=config.SESSION_AGE, https_only=config.HTTPS_ONLY
+    SessionMiddleware, secret_key=settings.secret_key, max_age=settings.session_age, https_only=settings.https_only
 )
 
-upload_file_cache: TTLCache[str, UploadFile] = TTLCache(maxsize=config.CACHE_SIZE, ttl=config.SESSION_AGE)
+upload_file_cache: TTLCache[str, UploadFile] = TTLCache(maxsize=settings.cache_size, ttl=settings.session_age)
 cache_lock = threading.Lock()
 
 

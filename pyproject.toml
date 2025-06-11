@@ -8,6 +8,7 @@ dependencies = [
     "fastapi[standard]",
     "cachetools",
     "types-cachetools",
+    "pydantic_settings",
     "itsdangerous"
 ]
 
