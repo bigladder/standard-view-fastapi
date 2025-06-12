@@ -6,5 +6,6 @@ class StandardViewSettings(BaseSettings):
     session_age: int = 86400
     https_only: bool = False
     cache_size: int = 1000
+    log_level: str = "INFO"
 
     model_config = SettingsConfigDict(env_file=".env")

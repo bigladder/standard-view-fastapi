@@ -4,6 +4,7 @@ import uvicorn
 from cachetools import TTLCache
 from fastapi import FastAPI, UploadFile
 from fastapi.requests import Request
+from log import get_log_level, log_debug
 from middleware import StandardViewMiddleware, get_session_id
 from settings import StandardViewSettings
 from starlette.middleware.sessions import SessionMiddleware
@@ -26,12 +27,12 @@ async def upload(request: Request, upload_file: UploadFile) -> str:
     session_id = get_session_id(request)
 
     if await validate_upload_file(upload_file):
-        print(f"Validation successful for session_id {session_id}")
+        log_debug(session_id, "File validation passed")
         with cache_lock:
             upload_file_cache[session_id] = upload_file
-            print(f"Cached file for file_id {session_id}")
+            log_debug(session_id, "Added file to cache")
     else:
-        print(f"Validation failed for file_id {session_id}")
+        log_debug(session_id, "File validation failed")
         return "Upload failed"
 
     return "Upload complete"
@@ -44,13 +45,13 @@ async def clear(request: Request) -> str:
     with cache_lock:
         if session_id in upload_file_cache:
             upload_file_cache.pop(session_id)
-            print(f"Removed session_id {session_id}")
+            log_debug(session_id, "Removed file from cache")
 
     request.session.clear()
-    print("Cleared session")
+    log_debug(session_id, "Cleared session")
 
     return "Clear complete"
 
 
 if __name__ == "__main__":
-    uvicorn.run(app)
+    uvicorn.run(app, log_level=get_log_level(settings.log_level))
