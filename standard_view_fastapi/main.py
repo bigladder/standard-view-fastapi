@@ -1,16 +1,20 @@
 import threading
 
+import log
+import middleware
 import uvicorn
+import validation
 from cachetools import TTLCache
 from fastapi import FastAPI, UploadFile
 from fastapi.requests import Request
-from log import get_log_level, log_debug
-from middleware import StandardViewMiddleware, get_session_id
+from middleware import StandardViewMiddleware
 from settings import StandardViewSettings
 from starlette.middleware.sessions import SessionMiddleware
-from validation import validate_upload_file
 
 settings = StandardViewSettings()
+log.init(settings)
+upload_file_cache: TTLCache[str, UploadFile] = TTLCache(maxsize=settings.cache_size, ttl=settings.session_age)
+cache_lock = threading.Lock()
 
 app = FastAPI()
 app.add_middleware(StandardViewMiddleware)
@@ -18,40 +22,37 @@ app.add_middleware(
     SessionMiddleware, secret_key=settings.secret_key, max_age=settings.session_age, https_only=settings.https_only
 )
 
-upload_file_cache: TTLCache[str, UploadFile] = TTLCache(maxsize=settings.cache_size, ttl=settings.session_age)
-cache_lock = threading.Lock()
-
 
 @app.post("/upload")
 async def upload(request: Request, upload_file: UploadFile) -> str:
-    session_id = get_session_id(request)
+    session_id = middleware.get_session_id(request)
 
-    if await validate_upload_file(upload_file):
-        log_debug(session_id, "File validation passed")
+    if await validation.validate_upload_file(upload_file):
+        log.debug("File validation passed", session_id)
         with cache_lock:
             upload_file_cache[session_id] = upload_file
-            log_debug(session_id, "Added file to cache")
+            log.debug("Added file to cache", session_id)
     else:
-        log_debug(session_id, "File validation failed")
+        log.debug("File validation failed", session_id)
         return "Upload failed"
 
     return "Upload complete"
 
 
-@app.get("/clear")
+@app.delete("/clear")
 async def clear(request: Request) -> str:
-    session_id = get_session_id(request)
+    session_id = middleware.get_session_id(request)
 
     with cache_lock:
         if session_id in upload_file_cache:
             upload_file_cache.pop(session_id)
-            log_debug(session_id, "Removed file from cache")
+            log.debug("Removed file from cache", session_id)
 
     request.session.clear()
-    log_debug(session_id, "Cleared session")
+    log.debug("Cleared session", session_id)
 
     return "Clear complete"
 
 
 if __name__ == "__main__":
-    uvicorn.run(app, log_level=get_log_level(settings.log_level))
+    uvicorn.run(app, host="127.0.0.1", port=80, log_config=None)

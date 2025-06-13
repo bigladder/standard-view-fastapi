@@ -1,7 +1,7 @@
 import secrets
 
+import log
 from fastapi.requests import Request
-from log import log_debug
 from starlette.types import ASGIApp, Receive, Scope, Send
 
 
@@ -23,9 +23,11 @@ class StandardViewMiddleware:
 
         if "session" in scope:
             if "session_id" in scope["session"]:
-                log_debug(get_session_id(scope), "Found existing session")
+                session_id = get_session_id(scope)
+                log.debug("Found existing session", session_id)
             else:
                 scope["session"]["session_id"] = secrets.token_hex(16)
-                log_debug(get_session_id(scope), "Created new session")
+                session_id = get_session_id(scope)
+                log.debug("Created new session", session_id)
 
         await self.app(scope, receive, send)

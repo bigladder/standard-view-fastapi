@@ -1,0 +1,47 @@
+version: 1
+disable_existing_loggers: false
+formatters:
+  defaultFormatter:
+    (): uvicorn.logging.DefaultFormatter
+    format: "%(asctime)s %(levelprefix)s %(message)s"
+    use_colors: true
+  accessFormatter:
+    (): uvicorn.logging.AccessFormatter
+    format: "%(asctime)s %(levelprefix)s %(client_addr)s - '%(request_line)s' %(status_code)s"
+    use_colors: true
+  defaultFormatterNoColor:
+    (): uvicorn.logging.DefaultFormatter
+    format: "%(asctime)s %(levelprefix)s %(message)s"
+    use_colors: false
+  accessFormatterNoColor:
+    (): uvicorn.logging.AccessFormatter
+    format: "%(asctime)s %(levelprefix)s %(client_addr)s - '%(request_line)s' %(status_code)s"
+    use_colors: false
+handlers:
+  defaultStreamHandler:
+    formatter: defaultFormatter
+    class: logging.StreamHandler
+    stream: ext://sys.stderr
+  accessStreamHandler:
+    formatter: accessFormatter
+    class: logging.StreamHandler
+    stream: ext://sys.stdout
+  defaultFileHandler:
+    formatter: defaultFormatterNoColor
+    class: logging.FileHandler
+    filename: logging.log
+  accessFileHandler:
+    formatter: accessFormatterNoColor
+    class: logging.FileHandler
+    filename: logging.log
+loggers:
+  uvicorn:
+    handlers: [defaultStreamHandler, defaultFileHandler]
+    level: DEBUG
+    propagate: false
+  uvicorn.error:
+    level: DEBUG
+  uvicorn.access:
+    handlers: [accessStreamHandler, accessFileHandler]
+    level: DEBUG
+    propagate: false

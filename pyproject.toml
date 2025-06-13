@@ -9,6 +9,8 @@ dependencies = [
     "cachetools",
     "types-cachetools",
     "pydantic_settings",
+    "pyyaml",
+    "types-pyyaml",
     "itsdangerous"
 ]
 
