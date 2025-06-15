@@ -8,6 +8,7 @@ ENV PATH="/code/.venv/bin:$PATH"
 
 WORKDIR /code
 
+#COPY . .
 RUN git clone --branch main https://github.com/bigladder/standard-view-fastapi.git .
 RUN uv sync --all-extras
 

@@ -12,7 +12,7 @@ settings = StandardViewSettings()
 logger = StandardViewLogger(settings)
 cache = StandardViewCache(settings, logger)
 
-app = FastAPI()
+app = FastAPI(lifespan=logger.lifespan_config)
 app.add_middleware(StandardViewMiddleware, logger=logger)
 app.add_middleware(
     SessionMiddleware, secret_key=settings.secret_key, max_age=settings.session_age, https_only=settings.https_only

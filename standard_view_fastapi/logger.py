@@ -1,19 +1,26 @@
 import logging
 import logging.config
 from logging import Logger
+from typing import AsyncIterator
 
 import click
 import yaml
+from fastapi import FastAPI
+from fastapi.concurrency import asynccontextmanager
 from settings import StandardViewSettings
 
 
 class StandardViewLogger:
     def __init__(self, settings: StandardViewSettings) -> None:
-        with open(settings.logging_yaml) as fs:
+        self.logging_yaml: str = settings.logging_yaml
+        self.logger: Logger = logging.getLogger("uvicorn.error")
+
+    @asynccontextmanager
+    async def lifespan_config(self, app: FastAPI) -> AsyncIterator[None]:
+        with open(self.logging_yaml) as fs:
             config = yaml.safe_load(fs)
             logging.config.dictConfig(config)
-
-        self.logger: Logger = logging.getLogger("uvicorn.error")
+        yield
 
     def log(self, level: int, session_id: str | None, message: str) -> None:
         color_message = message
