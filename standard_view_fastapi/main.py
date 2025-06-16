@@ -19,6 +19,13 @@ app.add_middleware(
 )
 
 
+@app.get("/exists")
+async def exists(request: Request) -> bool:
+    session_id = middleware.get_session_id(request)
+
+    return cache.exists(session_id)
+
+
 @app.post("/upload")
 async def upload(request: Request, upload_file: UploadFile) -> str:
     session_id = middleware.get_session_id(request)
@@ -37,15 +44,13 @@ async def upload(request: Request, upload_file: UploadFile) -> str:
 
 
 @app.delete("/clear")
-async def clear(request: Request) -> str:
+async def clear(request: Request) -> None:
     session_id = middleware.get_session_id(request)
 
     cache.remove(session_id)
 
     request.session.clear()
     logger.debug(session_id, "Cleared session")
-
-    return "Clear complete"
 
 
 if __name__ == "__main__":

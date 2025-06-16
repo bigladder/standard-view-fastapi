@@ -23,12 +23,11 @@ class StandardViewMiddleware:
             return
 
         if "session" in scope:
-            if "session_id" in scope["session"]:
-                session_id = get_session_id(scope)
-                self.logger.debug(session_id, "Found existing session")
-            else:
+            exists = "session_id" in scope["session"]
+            if not exists:
                 scope["session"]["session_id"] = secrets.token_hex(16)
-                session_id = get_session_id(scope)
-                self.logger.debug(session_id, "Created new session")
+
+            session_id = get_session_id(scope)
+            self.logger.debug(session_id, "Found existing session" if exists else "Created new session")
 
         await self.app(scope, receive, send)
