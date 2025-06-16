@@ -5,6 +5,7 @@ description = "Add your description here"
 requires-python = "~=3.10"
 readme = "README.md"
 dependencies = [
+    "schema205",
     "fastapi[standard]",
     "cachetools",
     "types-cachetools",
@@ -57,4 +58,7 @@ build-backend = "hatchling.build"
 packages = ["standard-view-fastapi"]
 
 [tool.uv]
+package = false
+
 [tool.uv.sources]
+schema205 = { path = "./schema-205", editable = true }
