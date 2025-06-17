@@ -61,4 +61,4 @@ packages = ["standard-view-fastapi"]
 package = false
 
 [tool.uv.sources]
-schema205 = { path = "./schema-205", editable = true }
+schema205 = { path = "schema-205", editable = true }
