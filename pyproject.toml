@@ -10,7 +10,6 @@ dependencies = [
     "itsdangerous",
     "pydantic_settings",
     "pyyaml",
-    "schema205",
     "types-cachetools",
     "types-pyyaml",
 ]
@@ -61,4 +60,3 @@ packages = ["standard-view-fastapi"]
 package = false
 
 [tool.uv.sources]
-schema205 = { path = "standards/schema-205" }
