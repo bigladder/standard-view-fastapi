@@ -1,7 +1,7 @@
 [project]
 name = "standard-view-fastapi"
 version = "0.1.0"
-description = "Add your description here"
+description = "A FastAPI for the Standard View web app"
 requires-python = "~=3.10"
 readme = "README.md"
 dependencies = [
@@ -12,7 +12,7 @@ dependencies = [
     "pyyaml",
     "schema205",
     "types-cachetools",
-    "types-pyyaml"
+    "types-pyyaml",
 ]
 
 [dependency-groups]
@@ -33,7 +33,7 @@ select = [
     "F",  # pyflakes (see https://docs.astral.sh/ruff/rules/#pyflakes-f)
     "PL", # Pylint (see https://docs.astral.sh/ruff/rules/#pylint-pl)
     "I001" # isort unsorted-imports (see https://docs.astral.sh/ruff/rules/#isort-i)
-    ]
+]
 ignore = [
     "F405", # undefined-local-with-import-star-usage
 ]
