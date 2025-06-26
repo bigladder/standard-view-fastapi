@@ -911,7 +911,7 @@ wheels = [
 [[package]]
 name = "schema205"
 version = "2.0.0"
-source = { editable = "schema-205" }
+source = { directory = "standards/schema-205" }
 dependencies = [
     { name = "jinja2" },
     { name = "jsonschema" },
@@ -974,7 +974,7 @@ requires-dist = [
     { name = "itsdangerous" },
     { name = "pydantic-settings" },
     { name = "pyyaml" },
-    { name = "schema205", editable = "schema-205" },
+    { name = "schema205", directory = "standards/schema-205" },
     { name = "types-cachetools" },
     { name = "types-pyyaml" },
 ]

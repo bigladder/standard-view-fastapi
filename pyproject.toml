@@ -5,14 +5,14 @@ description = "Add your description here"
 requires-python = "~=3.10"
 readme = "README.md"
 dependencies = [
-    "schema205",
-    "fastapi[standard]",
     "cachetools",
-    "types-cachetools",
+    "fastapi[standard]",
+    "itsdangerous",
     "pydantic_settings",
     "pyyaml",
-    "types-pyyaml",
-    "itsdangerous"
+    "schema205",
+    "types-cachetools",
+    "types-pyyaml"
 ]
 
 [dependency-groups]
@@ -61,4 +61,4 @@ packages = ["standard-view-fastapi"]
 package = false
 
 [tool.uv.sources]
-schema205 = { path = "schema-205", editable = true }
+schema205 = { path = "standards/schema-205" }
