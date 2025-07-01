@@ -8,6 +8,7 @@ dependencies = [
     "cachetools",
     "fastapi[standard]",
     "itsdangerous",
+    "lattice",
     "pydantic_settings",
     "pyyaml",
     "types-cachetools",
@@ -60,3 +61,4 @@ packages = ["standard-view-fastapi"]
 package = false
 
 [tool.uv.sources]
+lattice = { git = "https://github.com/bigladder/lattice.git", rev = "8a67266cdeb48f5f290f412d45decd54b314086c" }

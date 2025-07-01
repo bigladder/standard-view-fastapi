@@ -1,5 +1,6 @@
 .git
 .github
+.lattice
 .mypy_cache
 .ruff_cache
 .venv
