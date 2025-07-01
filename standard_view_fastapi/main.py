@@ -7,10 +7,12 @@ from logger import StandardViewLogger
 from middleware import StandardViewMiddleware
 from settings import StandardViewSettings
 from starlette.middleware.sessions import SessionMiddleware
+from validation import StandardViewValidator
 
 settings = StandardViewSettings()
 logger = StandardViewLogger(settings)
 cache = StandardViewCache(settings, logger)
+validator = StandardViewValidator(settings, logger)
 
 app = FastAPI(lifespan=logger.lifespan_config)
 app.add_middleware(StandardViewMiddleware, logger=logger)
@@ -30,17 +32,12 @@ async def exists(request: Request) -> bool:
 async def upload(request: Request, upload_file: UploadFile) -> str:
     session_id = middleware.get_session_id(request)
 
-    file_bytes = await upload_file.read()
-    file_content = file_bytes.decode()
+    is_valid, validation_messages = await validator.validate_file(session_id, upload_file)
 
-    if "metadata" in file_content:
-        logger.debug(session_id, "File validation passed")
+    if is_valid:
         cache.add(session_id, upload_file)
-    else:
-        logger.debug(session_id, "File validation failed")
-        return "Upload failed"
 
-    return "Upload complete"
+    return validation_messages
 
 
 @app.delete("/clear")

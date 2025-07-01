@@ -50,6 +50,10 @@ check_untyped_defs = true
 module = "standard-view-fastapi.*"
 disable_error_code = ["annotation-unchecked","import"]
 
+[[tool.mypy.overrides]]
+module = "lattice.*"
+ignore_missing_imports = true
+
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
