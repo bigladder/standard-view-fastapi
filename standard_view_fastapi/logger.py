@@ -13,7 +13,7 @@ from settings import StandardViewSettings
 class StandardViewLogger:
     def __init__(self, settings: StandardViewSettings) -> None:
         self.logging_yaml: str = settings.logging_yaml
-        self.logger: Logger = logging.getLogger("uvicorn.error")
+        self.logger: Logger = logging.getLogger(settings.logger)
 
     @asynccontextmanager
     async def lifespan_config(self, app: FastAPI) -> AsyncIterator[None]:
