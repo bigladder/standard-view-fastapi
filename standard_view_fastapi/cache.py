@@ -5,15 +5,13 @@ from cachetools import TTLCache
 from fastapi import UploadFile
 from logger import StandardViewLogger
 from settings import StandardViewSettings
-from starlette.datastructures import Headers
 
 
 class StandardViewCacheFile:
     def __init__(self, upload_file: UploadFile):
         self.content: bytes = upload_file.file.read()
-        self.file_name: str | None = upload_file.filename
+        self.filename: str = upload_file.filename or str()
         self.content_type: str | None = upload_file.content_type
-        self.headers: Headers = upload_file.headers
 
 
 class StandardViewCache:
@@ -37,6 +35,14 @@ class StandardViewCache:
             self.cache[session_id] = cache_file
 
         self.logger.debug(session_id, "Updated file in cache" if exists else "Added file to cache")
+
+    def get(self, session_id: str) -> StandardViewCacheFile | None:
+        with self.lock:
+            exists = session_id in self.cache
+            cache_file = self.cache.get(session_id)
+
+        self.logger.debug(session_id, "Retrieved file from cache" if exists else "File does not exist in cache")
+        return cache_file
 
     def remove(self, session_id: str) -> None:
         with self.lock:

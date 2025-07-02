@@ -21,23 +21,22 @@ class StandardViewValidator:
 
     def validate_file(self, session_id: str, cache_file: StandardViewCacheFile) -> tuple[bool, str]:
         try:
-            file_name = cache_file.file_name or f"{session_id}.json"
-            temp_file = os.path.join(self.lattice_directory, file_name)
+            temp_file = os.path.join(self.lattice_directory, cache_file.filename)
             with open(temp_file, "wb") as file:
                 file.write(cache_file.content)
-                self.logger.debug(session_id, f"Created temp file {file_name}")
+                self.logger.debug(session_id, f"Created temp file {cache_file.filename}")
 
             self.lattice.validate_file(temp_file)
 
             is_valid = True
-            validation_messages = f"Validation successful for {file_name}"
+            validation_messages = f"Validation successful for {cache_file.filename}"
         except Exception as exception:
             is_valid = False
             validation_messages = str(exception)
         finally:
             if os.path.exists(temp_file):
                 os.remove(temp_file)
-                self.logger.debug(session_id, f"Removed temp file {file_name}")
+                self.logger.debug(session_id, f"Removed temp file {cache_file.filename}")
 
         self.logger.debug(session_id, validation_messages)
         return is_valid, validation_messages

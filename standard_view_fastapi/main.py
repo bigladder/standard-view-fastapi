@@ -1,8 +1,11 @@
+import io
+
 import middleware
 import uvicorn
 from cache import StandardViewCache, StandardViewCacheFile
 from fastapi import FastAPI, UploadFile
 from fastapi.requests import Request
+from fastapi.responses import StreamingResponse
 from logger import StandardViewLogger
 from middleware import StandardViewMiddleware
 from settings import StandardViewSettings
@@ -39,6 +42,24 @@ async def upload(request: Request, upload_file: UploadFile) -> str:
         cache.add(session_id, cache_file)
 
     return validation_messages
+
+
+@app.get("/download")
+async def download(request: Request) -> StreamingResponse:
+    session_id = middleware.get_session_id(request)
+
+    cache_file = cache.get(session_id)
+
+    if cache_file is None:
+        response = StreamingResponse(io.BytesIO())
+    else:
+        response = StreamingResponse(
+            content=io.BytesIO(cache_file.content),
+            headers={"Content-Disposition": f"attachment; filename={cache_file.filename}"},
+            media_type=cache_file.content_type,
+        )
+
+    return response
 
 
 @app.delete("/clear")
