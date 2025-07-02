@@ -1,7 +1,7 @@
 import os
 from pathlib import Path
 
-from fastapi import UploadFile
+from cache import StandardViewCacheFile
 from lattice import Lattice
 from logger import StandardViewLogger
 from settings import StandardViewSettings
@@ -19,13 +19,12 @@ class StandardViewValidator:
         )
         self.logger: StandardViewLogger = logger
 
-    async def validate_file(self, session_id: str, upload_file: UploadFile) -> tuple[bool, str]:
+    def validate_file(self, session_id: str, cache_file: StandardViewCacheFile) -> tuple[bool, str]:
         try:
-            file_name = upload_file.filename or f"{session_id}.json"
+            file_name = cache_file.file_name or f"{session_id}.json"
             temp_file = os.path.join(self.lattice_directory, file_name)
-            file_bytes = await upload_file.read()
             with open(temp_file, "wb") as file:
-                file.write(file_bytes)
+                file.write(cache_file.content)
                 self.logger.debug(session_id, f"Created temp file {file_name}")
 
             self.lattice.validate_file(temp_file)

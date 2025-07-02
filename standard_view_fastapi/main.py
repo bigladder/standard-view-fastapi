@@ -1,6 +1,6 @@
 import middleware
 import uvicorn
-from cache import StandardViewCache
+from cache import StandardViewCache, StandardViewCacheFile
 from fastapi import FastAPI, UploadFile
 from fastapi.requests import Request
 from logger import StandardViewLogger
@@ -32,10 +32,11 @@ async def exists(request: Request) -> bool:
 async def upload(request: Request, upload_file: UploadFile) -> str:
     session_id = middleware.get_session_id(request)
 
-    is_valid, validation_messages = await validator.validate_file(session_id, upload_file)
+    cache_file = StandardViewCacheFile(upload_file)
+    is_valid, validation_messages = validator.validate_file(session_id, cache_file)
 
     if is_valid:
-        cache.add(session_id, upload_file)
+        cache.add(session_id, cache_file)
 
     return validation_messages
 
