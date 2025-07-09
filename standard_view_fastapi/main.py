@@ -4,6 +4,7 @@ import middleware
 import uvicorn
 from cache import StandardViewCache, StandardViewCacheFile
 from fastapi import FastAPI, UploadFile
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.requests import Request
 from fastapi.responses import StreamingResponse
 from logger import StandardViewLogger
@@ -22,6 +23,7 @@ app.add_middleware(StandardViewMiddleware, logger=logger)
 app.add_middleware(
     SessionMiddleware, secret_key=settings.secret_key, max_age=settings.session_age, https_only=settings.https_only
 )
+app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_credentials=True)
 
 
 @app.get("/exists")
