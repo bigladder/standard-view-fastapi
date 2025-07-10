@@ -23,7 +23,9 @@ app.add_middleware(StandardViewMiddleware, logger=logger)
 app.add_middleware(
     SessionMiddleware, secret_key=settings.secret_key, max_age=settings.session_age, https_only=settings.https_only
 )
-app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_credentials=True)
+app.add_middleware(
+    CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"], allow_credentials=True
+)
 
 
 @app.get("/exists")
