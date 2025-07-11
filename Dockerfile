@@ -13,7 +13,7 @@ WORKDIR /code
 # Copy from local repo
 #COPY . .
 # Clone from GitHub
-RUN git clone --recurse-submodules --branch main https://github.com/bigladder/standard-view-fastapi.git .
+RUN git clone --branch main https://github.com/bigladder/standard-view-fastapi.git .
 
 RUN uv sync --all-extras
 
