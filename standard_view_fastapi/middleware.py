@@ -1,11 +1,12 @@
 import secrets
+from typing import Union
 
 from fastapi.requests import Request
 from logger import StandardViewLogger
 from starlette.types import ASGIApp, Receive, Scope, Send
 
 
-def get_session_id(obj: Request | Scope) -> str:
+def get_session_id(obj: Union[Request, Scope]) -> str:
     if type(obj) is Request:
         return obj.session["session_id"]
     else:
