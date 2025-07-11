@@ -48,6 +48,13 @@ async def upload(request: Request, file_id: StandardViewFileId, upload_file: Upl
     return validation_messages
 
 
+@app.delete("/remove")
+async def remove(request: Request, file_id: StandardViewFileId) -> None:
+    session_id = middleware.get_session_id(request)
+
+    cache.remove(session_id)
+
+
 @app.get("/download")
 async def download(request: Request, file_id: StandardViewFileId) -> StreamingResponse:
     session_id = middleware.get_session_id(request)
