@@ -1,4 +1,4 @@
-import io
+from typing import Union
 
 import middleware
 import uvicorn
@@ -6,11 +6,11 @@ from cache import StandardViewCache, StandardViewCacheFile, StandardViewFileId
 from fastapi import FastAPI, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.requests import Request
-from fastapi.responses import StreamingResponse
 from logger import StandardViewLogger
 from middleware import StandardViewMiddleware
 from settings import StandardViewSettings
 from starlette.middleware.sessions import SessionMiddleware
+from tree import StandardViewTree
 from validation import StandardViewValidator
 
 settings = StandardViewSettings()
@@ -55,22 +55,18 @@ async def remove(request: Request, file_id: StandardViewFileId) -> None:
     cache.remove(session_id)
 
 
-@app.get("/download")
-async def download(request: Request, file_id: StandardViewFileId) -> StreamingResponse:
+@app.get("/tree")
+async def tree(request: Request, file_id: StandardViewFileId) -> Union[StandardViewTree, None]:
     session_id = middleware.get_session_id(request)
 
     cache_file = cache.get(session_id)
 
     if cache_file is None:
-        response = StreamingResponse(io.BytesIO())
+        tree = None
     else:
-        response = StreamingResponse(
-            content=io.BytesIO(cache_file.content),
-            headers={"Content-Disposition": f"attachment; filename={cache_file.filename}"},
-            media_type=cache_file.content_type,
-        )
+        tree = StandardViewTree(cache_file.filename)
 
-    return response
+    return tree
 
 
 @app.delete("/clear")
