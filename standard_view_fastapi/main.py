@@ -2,7 +2,7 @@ import io
 
 import middleware
 import uvicorn
-from cache import StandardViewCache, StandardViewCacheFile
+from cache import StandardViewCache, StandardViewCacheFile, StandardViewFileId
 from fastapi import FastAPI, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.requests import Request
@@ -29,14 +29,14 @@ app.add_middleware(
 
 
 @app.get("/exists")
-async def exists(request: Request) -> bool:
+async def exists(request: Request, file_id: StandardViewFileId) -> bool:
     session_id = middleware.get_session_id(request)
 
     return cache.exists(session_id)
 
 
 @app.post("/upload")
-async def upload(request: Request, upload_file: UploadFile) -> str:
+async def upload(request: Request, file_id: StandardViewFileId, upload_file: UploadFile) -> str:
     session_id = middleware.get_session_id(request)
 
     cache_file = StandardViewCacheFile(upload_file)
@@ -49,7 +49,7 @@ async def upload(request: Request, upload_file: UploadFile) -> str:
 
 
 @app.get("/download")
-async def download(request: Request) -> StreamingResponse:
+async def download(request: Request, file_id: StandardViewFileId) -> StreamingResponse:
     session_id = middleware.get_session_id(request)
 
     cache_file = cache.get(session_id)

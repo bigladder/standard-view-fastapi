@@ -1,10 +1,14 @@
 import threading
 from threading import Lock
+from typing import Annotated
 
+import annotated_types
 from cachetools import TTLCache
 from fastapi import UploadFile
 from logger import StandardViewLogger
 from settings import StandardViewSettings
+
+StandardViewFileId = Annotated[int, annotated_types.Ge(0), annotated_types.Le(1)]
 
 
 class StandardViewCacheFile:
