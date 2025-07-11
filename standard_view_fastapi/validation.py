@@ -36,7 +36,7 @@ class StandardViewValidator:
         finally:
             if os.path.exists(temp_file):
                 os.remove(temp_file)
-                self.logger.debug(session_id, f"Removed temp file {cache_file.filename}")
+                self.logger.debug(session_id, f"Deleted temp file {cache_file.filename}")
 
         self.logger.debug(session_id, validation_messages)
         return is_valid, validation_messages

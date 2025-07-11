@@ -1,7 +1,7 @@
 import logging
 import logging.config
 from logging import Logger
-from typing import AsyncIterator
+from typing import AsyncIterator, Optional
 
 import click
 import yaml
@@ -22,26 +22,26 @@ class StandardViewLogger:
             logging.config.dictConfig(config)
         yield
 
-    def log(self, level: int, session_id: str | None, message: str) -> None:
+    def log(self, level: int, session_id: Optional[str], message: str) -> None:
         color_message = message
 
         if type(session_id) is str:
             message = f"{message} (session_id: {session_id})"
-            color_message = f"{color_message} (session_id: {click.style(session_id, fg='magenta', bold=True)})"
+            color_message = f"(session_id: {click.style(session_id, fg='magenta')}) {color_message}"
 
         self.logger.log(level, message, extra={"color_message": color_message})
 
-    def debug(self, session_id: str | None, message: str) -> None:
+    def debug(self, session_id: Optional[str], message: str) -> None:
         self.log(logging.DEBUG, session_id, message)
 
-    def info(self, session_id: str | None, message: str) -> None:
+    def info(self, session_id: Optional[str], message: str) -> None:
         self.log(logging.INFO, session_id, message)
 
-    def warning(self, session_id: str | None, message: str) -> None:
+    def warning(self, session_id: Optional[str], message: str) -> None:
         self.log(logging.WARNING, session_id, message)
 
-    def error(self, session_id: str | None, message: str) -> None:
+    def error(self, session_id: Optional[str], message: str) -> None:
         self.log(logging.ERROR, session_id, message)
 
-    def critical(self, session_id: str | None, message: str) -> None:
+    def critical(self, session_id: Optional[str], message: str) -> None:
         self.log(logging.CRITICAL, session_id, message)
