@@ -1,4 +1,4 @@
-from typing import Union
+from typing import Optional
 
 import middleware
 import uvicorn
@@ -32,34 +32,31 @@ app.add_middleware(
 async def exists(request: Request, file_id: StandardViewFileId) -> bool:
     session_id = middleware.get_session_id(request)
 
-    return cache.exists(session_id)
+    return cache.exists(session_id, file_id)
 
 
 @app.post("/upload")
-async def upload(request: Request, file_id: StandardViewFileId, upload_file: UploadFile) -> str:
+async def upload(request: Request, file_id: StandardViewFileId, upload_file: UploadFile) -> None:
     session_id = middleware.get_session_id(request)
 
     cache_file = StandardViewCacheFile(upload_file)
-    is_valid, validation_messages = validator.validate_file(session_id, cache_file)
+    cache.add(session_id, file_id, cache_file)
 
-    if is_valid:
-        cache.add(session_id, cache_file)
-
-    return validation_messages
+    validator.validate_file(session_id, cache_file)
 
 
 @app.delete("/remove")
 async def remove(request: Request, file_id: StandardViewFileId) -> None:
     session_id = middleware.get_session_id(request)
 
-    cache.remove(session_id)
+    cache.remove(session_id, file_id)
 
 
 @app.get("/tree")
-async def tree(request: Request, file_id: StandardViewFileId) -> Union[StandardViewTree, None]:
+async def tree(request: Request, file_id: StandardViewFileId) -> Optional[StandardViewTree]:
     session_id = middleware.get_session_id(request)
 
-    cache_file = cache.get(session_id)
+    cache_file = cache.get(session_id, file_id)
 
     if cache_file is None:
         tree = None
@@ -73,7 +70,8 @@ async def tree(request: Request, file_id: StandardViewFileId) -> Union[StandardV
 async def clear(request: Request) -> None:
     session_id = middleware.get_session_id(request)
 
-    cache.remove(session_id)
+    cache.remove(session_id, 0)
+    cache.remove(session_id, 1)
 
     request.session.clear()
     logger.debug(session_id, "Cleared session")
