@@ -61,7 +61,7 @@ async def tree(request: Request, file_id: StandardViewFileId) -> Optional[Standa
     if cache_file is None:
         tree = None
     else:
-        tree = StandardViewTree(cache_file.filename)
+        tree = StandardViewTree(cache_file)
 
     return tree
 
