@@ -61,6 +61,7 @@ class StandardViewNode(BaseModel):
             case _:
                 self.type = StandardViewNodeType.DEFAULT
                 self.value = json_node
+                self.message = StandardViewMessage(StandardViewMessageType.INFO, "This note is for testing.")
 
 
 class StandardViewTree(BaseModel):
