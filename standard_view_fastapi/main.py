@@ -1,5 +1,3 @@
-from typing import Optional
-
 import middleware
 import uvicorn
 from cache import StandardViewCache, StandardViewCacheFile, StandardViewFileId
@@ -53,17 +51,12 @@ async def remove(request: Request, file_id: StandardViewFileId) -> None:
 
 
 @app.get("/tree")
-async def tree(request: Request, file_id: StandardViewFileId) -> Optional[StandardViewTree]:
+async def tree(request: Request, file_id: StandardViewFileId) -> StandardViewTree:
     session_id = middleware.get_session_id(request)
 
     cache_file = cache.get(session_id, file_id)
 
-    if cache_file is None:
-        tree = None
-    else:
-        tree = StandardViewTree(cache_file)
-
-    return tree
+    return StandardViewTree(cache_file)
 
 
 @app.delete("/clear")

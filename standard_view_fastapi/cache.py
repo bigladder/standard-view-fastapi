@@ -14,7 +14,7 @@ StandardViewFileId = Annotated[int, annotated_types.Ge(0), annotated_types.Le(1)
 class StandardViewCacheFile:
     def __init__(self, upload_file: UploadFile):
         self.content: bytes = upload_file.file.read()
-        self.filename: str = upload_file.filename or str()
+        self.filename: str = upload_file.filename or ""
         self.content_type: Optional[str] = upload_file.content_type
 
 
