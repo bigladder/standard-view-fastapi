@@ -87,7 +87,6 @@ StandardViewNode = (
 
 
 class StandardViewTree(BaseModel):
-    id: Optional[str] = None
     filename: Optional[str] = None
     data: Optional[StandardViewObjectNode] = None
 
@@ -95,12 +94,12 @@ class StandardViewTree(BaseModel):
         super().__init__()
 
         if cache_file is not None:
-            self.id = "root"
             self.filename = cache_file.filename
 
             json_node = json.loads(cache_file.content)
             root_node = create_node(json_node, json_node["metadata"].get("schema_name"))
             if isinstance(root_node, StandardViewObjectNode):
+                root_node.id = "root"
                 root_node.key_title = root_node.key
                 self.data = root_node
 
