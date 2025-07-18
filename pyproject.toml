@@ -30,6 +30,7 @@ line-length = 120
 [tool.ruff.lint]
 select = [
     "E",  # pycodestyle errors (see https://docs.astral.sh/ruff/rules/#pycodestyle-e-w)
+    "W",  # pycodestyle warnings (see https://docs.astral.sh/ruff/rules/#pycodestyle-w)
     "F",  # pyflakes (see https://docs.astral.sh/ruff/rules/#pyflakes-f)
     "PL", # Pylint (see https://docs.astral.sh/ruff/rules/#pylint-pl)
     "I001" # isort unsorted-imports (see https://docs.astral.sh/ruff/rules/#isort-i)
