@@ -50,7 +50,7 @@ async def remove(request: Request, file_id: StandardViewFileId) -> None:
     cache.remove(session_id, file_id)
 
 
-@app.get("/tree")
+@app.get("/tree", response_model_exclude_none=True)
 async def tree(request: Request, file_id: StandardViewFileId) -> StandardViewTree:
     session_id = middleware.get_session_id(request)
 

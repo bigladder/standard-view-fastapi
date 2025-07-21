@@ -19,7 +19,7 @@ class StandardViewNodeType(StrEnum):
 class StandardViewNodeBase(BaseModel):
     type: StandardViewNodeType
     id: Optional[str] = None
-    exists: bool = True
+    exists: Optional[bool] = None
     key: Optional[str] = None
     key_title: Optional[str] = None
     info: Optional[str] = None
