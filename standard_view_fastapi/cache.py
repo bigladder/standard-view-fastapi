@@ -56,8 +56,7 @@ class StandardViewCache:
     def get(self, session_id: str, file_id: StandardViewFileId) -> Optional[StandardViewCacheFile]:
         with self.lock:
             exists = self._exists(session_id, file_id)
-            if exists:
-                cache_file = self.cache[session_id][file_id]
+            cache_file = self.cache[session_id][file_id] if exists else None
 
         self.logger.debug(session_id, "Retrieved file from cache" if exists else "File does not exist in cache")
         return cache_file
