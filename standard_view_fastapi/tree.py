@@ -18,12 +18,14 @@ class StandardViewNodeType(StrEnum):
 
 class StandardViewNodeBase(BaseModel):
     type: StandardViewNodeType
-    id: Optional[str] = None
+    index_path: Optional[str] = None
+    json_path: Optional[str] = None
+    schema_path: Optional[str] = None
     exists: Optional[bool] = None
     key: Optional[str] = None
     key_title: Optional[str] = None
-    info: Optional[str] = None
-    unit: Optional[str] = None
+    description: Optional[str] = None
+    units: Optional[str] = None
     error: Optional[str] = None
 
     def __init__(self, type: StandardViewNodeType, key: Optional[str] = None) -> None:
@@ -89,6 +91,7 @@ StandardViewNode = (
 class StandardViewTree(BaseModel):
     filename: Optional[str] = None
     data: Optional[StandardViewObjectNode] = None
+    error_paths: Optional[list[str]] = None
 
     def __init__(self, cache_file: Optional[StandardViewCacheFile]) -> None:
         super().__init__()
@@ -99,7 +102,6 @@ class StandardViewTree(BaseModel):
             json_node = json.loads(cache_file.content)
             root_node = create_node(json_node, json_node["metadata"].get("schema_name"))
             if isinstance(root_node, StandardViewObjectNode):
-                root_node.id = "root"
                 root_node.key_title = root_node.key
                 self.data = root_node
 
