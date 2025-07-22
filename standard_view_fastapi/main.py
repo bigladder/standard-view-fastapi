@@ -3,6 +3,7 @@ import uvicorn
 from cache import StandardViewCache, StandardViewCacheFile, StandardViewFileId
 from fastapi import FastAPI, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.requests import Request
 from logger import StandardViewLogger
 from middleware import StandardViewMiddleware
@@ -19,6 +20,7 @@ validator = StandardViewValidator(settings, logger)
 # Configure logging via lifespan so that it still works when using the fastapi CLI (which is what the Dockerfile uses)
 app = FastAPI(lifespan=logger.lifespan_config)
 app.add_middleware(StandardViewMiddleware, logger=logger)
+app.add_middleware(GZipMiddleware)
 app.add_middleware(
     SessionMiddleware, secret_key=settings.secret_key, max_age=settings.session_age, https_only=settings.https_only
 )
