@@ -16,6 +16,7 @@ logger = StandardViewLogger(settings)
 cache = StandardViewCache(settings, logger)
 validator = StandardViewValidator(settings, logger)
 
+# Configure logging via lifespan so that it still works when using the fastapi CLI (which is what the Dockerfile uses)
 app = FastAPI(lifespan=logger.lifespan_config)
 app.add_middleware(StandardViewMiddleware, logger=logger)
 app.add_middleware(
