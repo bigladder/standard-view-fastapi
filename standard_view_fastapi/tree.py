@@ -106,6 +106,24 @@ class StandardViewTree(BaseModel):
                 self.data = root_node
 
 
+class StandardViewTrees(BaseModel):
+    tree0: Optional[StandardViewTree] = None
+    tree1: Optional[StandardViewTree] = None
+    diff_paths: Optional[list[str]] = None
+
+    def __init__(
+        self, cache_file0: Optional[StandardViewCacheFile], cache_file1: Optional[StandardViewCacheFile]
+    ) -> None:
+        super().__init__()
+
+        if cache_file0 is not None:
+            self.tree0 = StandardViewTree(cache_file0)
+        if cache_file1 is not None:
+            self.tree1 = StandardViewTree(cache_file1)
+        if self.tree0 is not None and self.tree1 is not None:
+            self.diff_paths = []
+
+
 def create_node(json_node: Any, key: Optional[str] = None) -> StandardViewNode:
     parent_node: StandardViewNode
 

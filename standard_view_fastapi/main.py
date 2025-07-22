@@ -9,7 +9,7 @@ from logger import StandardViewLogger
 from middleware import StandardViewMiddleware
 from settings import StandardViewSettings
 from starlette.middleware.sessions import SessionMiddleware
-from tree import StandardViewTree
+from tree import StandardViewTree, StandardViewTrees
 from validation import StandardViewValidator
 
 settings = StandardViewSettings()
@@ -60,6 +60,16 @@ async def tree(request: Request, file_id: StandardViewFileId) -> StandardViewTre
     cache_file = cache.get(session_id, file_id)
 
     return StandardViewTree(cache_file)
+
+
+@app.get("/trees", response_model_exclude_none=True)
+async def trees(request: Request) -> StandardViewTrees:
+    session_id = middleware.get_session_id(request)
+
+    cache_file0 = cache.get(session_id, 0)
+    cache_file1 = cache.get(session_id, 1)
+
+    return StandardViewTrees(cache_file0, cache_file1)
 
 
 @app.delete("/clear")
