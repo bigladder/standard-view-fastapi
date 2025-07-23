@@ -7,7 +7,8 @@ import click
 import yaml
 from fastapi import FastAPI
 from fastapi.concurrency import asynccontextmanager
-from settings import StandardViewSettings
+
+from standard_view_fastapi.settings import StandardViewSettings
 
 
 class StandardViewLogger:
@@ -22,7 +23,7 @@ class StandardViewLogger:
             logging.config.dictConfig(config)
         yield
 
-    def log(self, level: int, session_id: Optional[str], message: str) -> None:
+    def _log(self, level: int, session_id: Optional[str], message: str) -> None:
         color_message = message
 
         if type(session_id) is str:
@@ -32,16 +33,16 @@ class StandardViewLogger:
         self.logger.log(level, message, extra={"color_message": color_message})
 
     def debug(self, session_id: Optional[str], message: str) -> None:
-        self.log(logging.DEBUG, session_id, message)
+        self._log(logging.DEBUG, session_id, message)
 
     def info(self, session_id: Optional[str], message: str) -> None:
-        self.log(logging.INFO, session_id, message)
+        self._log(logging.INFO, session_id, message)
 
     def warning(self, session_id: Optional[str], message: str) -> None:
-        self.log(logging.WARNING, session_id, message)
+        self._log(logging.WARNING, session_id, message)
 
     def error(self, session_id: Optional[str], message: str) -> None:
-        self.log(logging.ERROR, session_id, message)
+        self._log(logging.ERROR, session_id, message)
 
     def critical(self, session_id: Optional[str], message: str) -> None:
-        self.log(logging.CRITICAL, session_id, message)
+        self._log(logging.CRITICAL, session_id, message)
