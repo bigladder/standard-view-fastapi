@@ -7,8 +7,7 @@ import click
 import yaml
 from fastapi import FastAPI
 from fastapi.concurrency import asynccontextmanager
-
-from standard_view_fastapi.settings import StandardViewSettings
+from settings import StandardViewSettings
 
 
 class StandardViewLogger:
