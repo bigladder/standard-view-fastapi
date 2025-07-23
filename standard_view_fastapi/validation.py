@@ -8,23 +8,27 @@ from settings import StandardViewSettings
 
 
 class StandardViewValidator:
+    lattice_directory: str
+    lattice: Lattice
+    logger: StandardViewLogger
+
     def __init__(self, settings: StandardViewSettings, logger: StandardViewLogger) -> None:
-        self.lattice_directory: str = os.path.join(Path.cwd(), settings.lattice_directory)
+        self.lattice_directory = os.path.join(Path.cwd(), settings.lattice_directory)
         os.makedirs(self.lattice_directory, exist_ok=True)
-        self.lattice: Lattice = Lattice(
+        self.lattice = Lattice(
             root_directory=settings.schema_directory,
             build_directory=self.lattice_directory,
             build_output_directory_name=None,
             build_validation=True,
         )
-        self.logger: StandardViewLogger = logger
+        self.logger = logger
 
     def validate_file(self, session_id: str, cache_file: StandardViewCacheFile) -> tuple[bool, str]:
         try:
             temp_file = os.path.join(self.lattice_directory, cache_file.filename)
             with open(temp_file, "wb") as file:
                 file.write(cache_file.content)
-                self.logger.debug(session_id, f"Created temp file {cache_file.filename}")
+                self.logger.debug(f"Created temp file {cache_file.filename}", session_id)
 
             self.lattice.validate_file(temp_file)
 
@@ -36,7 +40,7 @@ class StandardViewValidator:
         finally:
             if os.path.exists(temp_file):
                 os.remove(temp_file)
-                self.logger.debug(session_id, f"Deleted temp file {cache_file.filename}")
+                self.logger.debug(f"Deleted temp file {cache_file.filename}", session_id)
 
-        self.logger.debug(session_id, validation_messages)
+        self.logger.debug(validation_messages, session_id)
         return is_valid, validation_messages

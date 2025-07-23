@@ -29,9 +29,8 @@ class StandardViewNodeBase(BaseModel):
     error: Optional[str] = None
 
     def __init__(self, type: StandardViewNodeType, key: Optional[str] = None) -> None:
-        super().__init__(type=type)
+        super().__init__(type=type, key=key)
 
-        self.key = key
         if self.key is not None and type is not StandardViewNodeType.HEADER:
             self.key_title = self.key.title().replace("_", " ")
 
@@ -58,17 +57,19 @@ class StandardViewDataNode(StandardViewNodeBase):
 
 
 class StandardViewHeaderNode(StandardViewNodeBase):
-    title: str = ""
-    subtitle: str = ""
-    rootDataGroup: str = ""
-    version: str = ""
+    title: Optional[str] = None
+    subtitle: Optional[str] = None
+    root_data_group: Optional[str] = None
+    version: Optional[str] = None
 
-    def __init__(self, title: str, subtitle: str, rootDataGroup: str, version: str) -> None:
+    def __init__(
+        self, title: Optional[str], subtitle: Optional[str], root_data_group: Optional[str], version: Optional[str]
+    ) -> None:
         super().__init__(StandardViewNodeType.HEADER)
 
         self.title = title
         self.subtitle = subtitle
-        self.rootDataGroup = rootDataGroup
+        self.root_data_group = root_data_group
         self.version = version
 
 

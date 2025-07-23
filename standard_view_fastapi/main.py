@@ -80,7 +80,7 @@ async def clear(request: Request) -> None:
     cache.remove(session_id, 1)
 
     request.session.clear()
-    logger.debug(session_id, "Cleared session")
+    logger.debug("Cleared session", session_id)
 
 
 if __name__ == "__main__":

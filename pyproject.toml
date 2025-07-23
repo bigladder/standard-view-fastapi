@@ -37,6 +37,7 @@ select = [
 ]
 ignore = [
     "F405", # undefined-local-with-import-star-usage
+    "PLE1205", # logging-too-many-args
 ]
 
 [tool.ruff.lint.pylint]
